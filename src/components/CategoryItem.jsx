@@ -1,9 +1,10 @@
 import styled from "styled-components";
 import React from "react";
+import { mobile } from "../responsive";
 
 const Container = styled.div`
   flex: 1;
-  margin: 0.5rem;
+  margin: 0.15rem 0.5rem;
   height: 50vh;
   position: relative;
 `;
@@ -24,11 +25,20 @@ const Image = styled.img`
   width: 100%;
   height: 100%;
   object-fit: cover;
+  object-position: center -8rem;
+
+  ${mobile({
+    height: "40vh",
+  })}
 `;
 
 const Title = styled.h1`
   color: white;
   margin-bottom: 2rem;
+
+  ${mobile({
+    marginBottom: "1rem",
+  })}
 `;
 
 const Button = styled.button`

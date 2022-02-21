@@ -5,6 +5,7 @@ import {
   ShoppingCartOutlined,
 } from "@mui/icons-material";
 import React from "react";
+import { mobile } from "../responsive";
 
 const Info = styled.div`
   opacity: 0;
@@ -23,20 +24,25 @@ const Info = styled.div`
 
   &:hover {
     opacity: 1;
-    cursor: pointer; 
+    cursor: pointer;
   }
 `;
 
 const Container = styled.div`
   flex: 1;
   margin: 0.5rem;
-  min-width: 20rem;
   height: 20rem;
+  min-width: 18rem;
+  height: 22rem;
   display: flex;
   align-items: center;
   justify-content: center;
   background-color: #f5fbfd;
   position: relative;
+
+  ${mobile({
+    margin: 0,
+  })}
 `;
 
 const Circle = styled.div`

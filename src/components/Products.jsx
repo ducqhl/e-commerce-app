@@ -6,7 +6,7 @@ import Product from "./Product";
 const Container = styled.div`
   display: flex;
   flex-wrap: wrap;
-  padding: 1.5rem;
+  padding: 1.2rem;
   justify-content: space-between;
 `;
 

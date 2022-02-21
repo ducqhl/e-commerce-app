@@ -9,10 +9,15 @@ import {
 } from "@mui/icons-material";
 import React from "react";
 import styled from "styled-components";
+import { mobile } from "../responsive";
 
 const Container = styled.div`
   display: flex;
   flex-wrap: wrap;
+
+  ${mobile({
+    flexDirection: "column",
+  })}
 `;
 
 const Left = styled.div`
@@ -70,6 +75,9 @@ const ListItem = styled.li`
 const Right = styled.div`
   flex: 1;
   padding: 1.5rem;
+  ${mobile({
+    backgroundColor: "#eee",
+  })}
 `;
 
 const ContactItem = styled.div`
@@ -89,7 +97,9 @@ const MailOutlineIcon = styled(MailOutline)`
   margin-right: 0.8rem;
 `;
 
-const Payment = styled.img``;
+const Payment = styled.img`
+  width: 100%;
+`;
 
 const Footer = () => {
   return (
