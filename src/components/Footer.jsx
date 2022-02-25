@@ -98,7 +98,11 @@ const MailOutlineIcon = styled(MailOutline)`
 `;
 
 const Payment = styled.img`
-  width: 100%;
+  width: 50%;
+
+  ${mobile({
+    width: "100%",
+  })}
 `;
 
 const Footer = () => {

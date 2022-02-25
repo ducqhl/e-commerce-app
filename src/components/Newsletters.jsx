@@ -14,7 +14,7 @@ const Container = styled.div`
   padding: 1.5rem;
 
   ${mobile({
-    margin: "0.5rem",
+    margin: "0.25rem 1rem",
   })}
 `;
 

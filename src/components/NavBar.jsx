@@ -2,13 +2,17 @@ import styled from "styled-components";
 import { ShoppingBagOutlined } from "@mui/icons-material";
 import Search from "@mui/icons-material/Search";
 import Badge from "@mui/material/Badge";
-import { mobile } from "../responsive";
+import { mobile, tablet } from "../responsive";
 
 const Container = styled.div`
   height: 5rem;
 
   ${mobile({
-    height: "3rem",
+    height: "100%",
+  })}
+
+  ${tablet({
+    height: "100%",
   })}
 `;
 
@@ -19,7 +23,11 @@ const Wrapper = styled.div`
   justify-content: space-between;
 
   ${mobile({
-    padding: "0.5rem",
+    padding: "0.5rem 0",
+  })}
+
+  ${tablet({
+    flexDirection: "column",
   })}
 `;
 
@@ -30,7 +38,8 @@ const Left = styled.div`
 `;
 
 const Language = styled.span`
-  font-size: 14px;
+  font-size: 1rem;
+  cursor: pointer;
 
   ${mobile({
     display: "none",
@@ -41,20 +50,19 @@ const SearchContainer = styled.div`
   border: 0.5px solid lightgray;
   display: flex;
   align-items: center;
-  margin-left: 25px;
-  padding: 5px;
+  margin-left: 1.5rem;
 
   ${mobile({
-    marginLeft: "0",
-  })}
+    width: "5.5rem",
+    marginLeft: "1rem",
+  })};
 `;
 
 const Input = styled.input`
   border: none;
+  height: 2rem;
 
-  ${mobile({
-    width: "3.2rem",
-  })}
+  ${mobile({ width: "100%" })}
 `;
 
 const SearchIcon = styled(Search)`
@@ -91,7 +99,7 @@ const Right = styled.div`
 const MenuItem = styled.div`
   font-size: 1rem;
   cursor: pointer;
-  margin-left: 1rem;
+  margin-left: 1.5rem;
 
   ${mobile({
     fontSize: "0.8rem",
@@ -117,7 +125,7 @@ const NavBar = () => {
           <MenuItem>REGISTER</MenuItem>
           <MenuItem>SIGN IN</MenuItem>
           <MenuItem>
-            <Badge badgeContent={4}>
+            <Badge badgeContent={4} color="primary">
               <ShoppingBagOutlined />
             </Badge>
           </MenuItem>

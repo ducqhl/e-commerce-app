@@ -41,7 +41,7 @@ const Container = styled.div`
   position: relative;
 
   ${mobile({
-    margin: 0,
+    margin: "0.5rem 0rem",
   })}
 `;
 

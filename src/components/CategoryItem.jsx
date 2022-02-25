@@ -4,9 +4,13 @@ import { mobile } from "../responsive";
 
 const Container = styled.div`
   flex: 1;
-  margin: 0.15rem 0.5rem;
-  height: 50vh;
+  margin: 0.5rem;
+  height: 70vh;
   position: relative;
+
+  ${mobile({
+    margin: "0 1rem 0.25rem 1rem",
+  })}
 `;
 
 const Info = styled.div`
@@ -25,10 +29,10 @@ const Image = styled.img`
   width: 100%;
   height: 100%;
   object-fit: cover;
-  object-position: center -8rem;
 
   ${mobile({
     height: "40vh",
+    objectPosition: "center -8rem",
   })}
 `;
 
