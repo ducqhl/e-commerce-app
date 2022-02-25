@@ -32,7 +32,7 @@ const Container = styled.div`
   flex: 1;
   margin: 0.5rem;
   height: 20rem;
-  min-width: 18rem;
+  min-width: 20rem;
   height: 22rem;
   display: flex;
   align-items: center;
