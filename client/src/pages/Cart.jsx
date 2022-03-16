@@ -1,10 +1,17 @@
 import { Add, Remove } from "@mui/icons-material";
-import React from "react";
+import React, { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import styled from "styled-components";
 import Annoucement from "../components/Annoucement";
 import Footer from "../components/Footer";
 import NavBar from "../components/NavBar";
+import { addProduct, removeProduct } from "../redux/cart";
 import { mobile } from "../responsive";
+import StripeCheckout from "react-stripe-checkout";
+import * as api from "../api";
+import { useNavigate } from "react-router-dom";
+
+const PUBLIC_KEY = process.env.REACT_APP_STRIPE;
 
 const Container = styled.div``;
 
@@ -74,6 +81,7 @@ const ProductDetail = styled.div`
 
 const Image = styled.img`
   width: 12rem;
+  padding: 1rem;
 `;
 
 const Details = styled.div`
@@ -135,7 +143,7 @@ const Summary = styled.div`
   border: 0.5px solid lightgray;
   border-radius: 0.8rem;
   padding: 1.5rem;
-  min-height: 50vh;
+  min-height: 29vh;
 
   ${mobile({ minHeight: "unset" })}
 `;
@@ -163,9 +171,52 @@ const Button = styled.button`
   color: white;
   font-weight: 600;
   border: none;
+  cursor: pointer;
 `;
 
 const Cart = () => {
+  const navigate = useNavigate();
+  const cart = useSelector((state) => state.cart);
+  const dispatch = useDispatch();
+  const [stripeToken, setStripeToken] = useState(null);
+
+  const total = cart.products.reduce(
+    (total, product, index) => total + product.price * product.quantity,
+    0,
+  );
+
+  const onToken = (token) => {
+    setStripeToken(token);
+  };
+
+  useEffect(() => {
+    const makeRequest = async () => {
+      try {
+        const res = await api.checkout({
+          tokenId: stripeToken.id,
+          amount: total * 100,
+        });
+
+        navigate("/success",  {
+          stripeData: res.data,
+          products: cart, });
+      } catch (error) {}
+    };
+
+    cart && total > 0  && stripeToken && makeRequest();
+  }, [navigate, stripeToken, total, cart]);
+
+  const handleRemoveProduct = (product) => {
+    if (product.quantity === 1) dispatch(removeProduct(product._id));
+    else {
+      dispatch(addProduct({ ...product, quantity: product.quantity - 1 }));
+    }
+  };
+
+  const handleAddProduct = (product) => {
+    dispatch(addProduct({ ...product, quantity: product.quantity + 1 }));
+  };
+
   return (
     <Container>
       <Annoucement />
@@ -175,84 +226,76 @@ const Cart = () => {
         <Top>
           <TopButton>CONTINUE SHOPPING</TopButton>
           <TopTexts>
-            <TopText>Shopping Bag(2)</TopText>
+            <TopText>Shopping Bag({cart.products.length})</TopText>
             <TopText>Your Wishlist(0)</TopText>
           </TopTexts>
           <TopButton filled>CHECK OUT</TopButton>
         </Top>
         <Bottom>
           <Info>
-            <Product>
-              <ProductDetail>
-                <Image src="https://hips.hearstapps.com/vader-prod.s3.amazonaws.com/1614188818-TD1MTHU_SHOE_ANGLE_GLOBAL_MENS_TREE_DASHERS_THUNDER_b01b1013-cd8d-48e7-bed9-52db26515dc4.png?crop=1xw:1.00xh;center,top&resize=480%3A%2A" />
-                <Details>
-                  <ProductName>
-                    <b>Product:</b> SOME THING
-                  </ProductName>
-                  <ProductId>
-                    <b>ID:</b> 96564234243
-                  </ProductId>
-                  <ProductColor color="black" />
-                  <ProductSize>
-                    <b>Size:</b> 37.5
-                  </ProductSize>
-                </Details>
-              </ProductDetail>
-              <PriceDetail>
-                <ProductAmountContainer>
-                  <Add />
-                  <ProductAmount>2</ProductAmount>
-                  <Remove />
-                </ProductAmountContainer>
-                <ProductPrice>$ 200</ProductPrice>
-              </PriceDetail>
-            </Product>
-            <Hr />
-            <Product>
-              <ProductDetail>
-                <Image src="https://i.pinimg.com/originals/2d/af/f8/2daff8e0823e51dd752704a47d5b795c.png" />
-                <Details>
-                  <ProductName>
-                    <b>Product:</b> SOME THING ELSE
-                  </ProductName>
-                  <ProductId>
-                    <b>ID:</b> 96564234243
-                  </ProductId>
-                  <ProductColor color="black" />
-                  <ProductSize>
-                    <b>Size:</b> XL
-                  </ProductSize>
-                </Details>
-              </ProductDetail>
-              <PriceDetail>
-                <ProductAmountContainer>
-                  <Add />
-                  <ProductAmount>2</ProductAmount>
-                  <Remove />
-                </ProductAmountContainer>
-                <ProductPrice>$ 200</ProductPrice>
-              </PriceDetail>
-            </Product>
+            {cart.products.map((product) => (
+              <>
+                <Product>
+                  <ProductDetail>
+                    <Image src={product.img} />
+                    <Details>
+                      <ProductName>
+                        <b>Product:</b> {product.title}
+                      </ProductName>
+                      <ProductId>
+                        <b>ID:</b> {product._id}
+                      </ProductId>
+                      <ProductColor color={product.color} />
+                      <ProductSize>
+                        <b>Size:</b> {product.size}
+                      </ProductSize>
+                    </Details>
+                  </ProductDetail>
+                  <PriceDetail>
+                    <ProductAmountContainer>
+                      <Add onClick={() => handleAddProduct(product)} />
+                      <ProductAmount>{product.quantity}</ProductAmount>
+                      <Remove onClick={() => handleRemoveProduct(product)} />
+                    </ProductAmountContainer>
+                    <ProductPrice>
+                      $ {product.price * product.quantity}
+                    </ProductPrice>
+                  </PriceDetail>
+                </Product>
+                <Hr />
+              </>
+            ))}
           </Info>
           <Summary>
             <SummaryTitle>ORDER SUMMARY</SummaryTitle>
             <SummaryItem>
               <SummaryItemText>Subtotal</SummaryItemText>
-              <SummaryItemPrice>$ 80</SummaryItemPrice>
+              <SummaryItemPrice>$ {total}</SummaryItemPrice>
             </SummaryItem>
             <SummaryItem>
               <SummaryItemText>Estimated Shipping</SummaryItemText>
-              <SummaryItemPrice>$ 5.90</SummaryItemPrice>
+              <SummaryItemPrice>$ 20</SummaryItemPrice>
             </SummaryItem>
             <SummaryItem>
               <SummaryItemText>Shipping Discount</SummaryItemText>
-              <SummaryItemPrice>$ -5.90</SummaryItemPrice>
+              <SummaryItemPrice>-$ 20</SummaryItemPrice>
             </SummaryItem>
             <SummaryItem type="total">
               <SummaryItemText>Total</SummaryItemText>
-              <SummaryItemPrice>$ 80</SummaryItemPrice>
+              <SummaryItemPrice>$ {total}</SummaryItemPrice>
             </SummaryItem>
-            <Button>CHECKOUT NOW</Button>
+            <StripeCheckout
+              name="LAMON Shop"
+              image="https://scontent.fsgn5-8.fna.fbcdn.net/v/t1.6435-9/119610126_329382034806597_6298602612211921019_n.jpg?_nc_cat=109&ccb=1-5&_nc_sid=174925&_nc_ohc=WldbaJ-RvP0AX_eL4xe&_nc_ht=scontent.fsgn5-8.fna&oh=00_AT-viaeH2mLUL611sx4Vwzv-y4xfcVldiMn5o8O8HwKJog&oe=6254568C"
+              billingAddress
+              shippingAddress
+              description={`Your total is $${total}`}
+              amount={total * 100} // stripe using cen as unit
+              token={onToken}
+              stripeKey={PUBLIC_KEY}
+            >
+              <Button>CHECKOUT NOW</Button>
+            </StripeCheckout>
           </Summary>
         </Bottom>
       </Wrapper>

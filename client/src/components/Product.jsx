@@ -6,6 +6,7 @@ import {
 } from "@mui/icons-material";
 import React from "react";
 import { mobile } from "../responsive";
+import { Link } from "react-router-dom";
 
 const Info = styled.div`
   opacity: 0;
@@ -46,15 +47,19 @@ const Container = styled.div`
 `;
 
 const Circle = styled.div`
-  width: 5rem;
-  height: 5rem;
+  height: 20rem;
+  width: 20rem;
   border-radius: 50%;
   background-color: white;
-  position: absolute;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
 `;
 
 const Image = styled.img`
-  height: 75%;
+  height: 80%;
   z-index: 2;
 `;
 
@@ -63,6 +68,7 @@ const Icon = styled.div`
   height: 3rem;
   border-radius: 50%;
   background-color: white;
+  color: black;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -79,15 +85,18 @@ const Icon = styled.div`
 const Product = ({ product }) => {
   return (
     <Container>
-      <Circle />
-      <Image src={product.img} />
+      <Circle>
+        <Image src={product.img} />
+      </Circle>
       <Info>
         <Icon>
           <ShoppingCartOutlined />
         </Icon>
-        <Icon>
-          <SearchOutlined />
-        </Icon>
+        <Link to={`/product/${product._id}`}>
+          <Icon>
+            <SearchOutlined />
+          </Icon>
+        </Link>
         <Icon>
           <FavoriteBorderOutlined />
         </Icon>

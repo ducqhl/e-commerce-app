@@ -109,7 +109,7 @@ const Footer = () => {
   return (
     <Container>
       <Left>
-        <Logo>.LAMA</Logo>
+        <Logo>.LAMON</Logo>
         <Description>
           There are many variations of passages of Lorem Ipsum available, but
           the majority have suffered alteration in some form, by injected
@@ -155,7 +155,7 @@ const Footer = () => {
           <PhoneIcon /> +1 234 56 78
         </ContactItem>
         <ContactItem>
-          <MailOutlineIcon /> contact@lama.dev
+          <MailOutlineIcon /> wontreply@lamon.dev
         </ContactItem>
         <Payment src="https://i.ibb.co/Qfvn4z6/payment.png" />
       </Right>

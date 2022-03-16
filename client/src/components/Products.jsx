@@ -1,8 +1,8 @@
 import styled from "styled-components";
-import React from "react";
-import { popularProducts } from "../data";
+import React, { useEffect, useState } from "react";
 import Product from "./Product";
 import { mobile } from "../responsive";
+import * as api from "../api";
 
 const Container = styled.div`
   display: flex;
@@ -15,11 +15,56 @@ const Container = styled.div`
   })}
 `;
 
-const Products = () => {
+const Products = ({ category, filters, sort }) => {
+  const [products, setProducts] = useState([]);
+  const [filteredProducts, setFilteredProducts] = useState([]);
+
+  useEffect(() => {
+    const getProducts = async () => {
+      try {
+        const { data } = await api.getProducts(category);
+        setProducts(data);
+      } catch (error) {
+        console.log(error);
+      }
+    };
+
+    getProducts();
+  }, [category]);
+
+  useEffect(() => {
+    category &&
+      setFilteredProducts(
+        products?.filter((p) =>
+          Object.entries(filters).every(
+            ([key, value]) => value === "" || p[key]?.includes(value),
+          ),
+        ),
+      );
+  }, [category, products, filters]);
+
+  useEffect(() => {
+    if (sort === "newest") {
+      setFilteredProducts((prev) =>
+        [...prev].sort((a, b) => a.createdAt < b.createdAt),
+      );
+    } else if (sort === "asc") {
+      setFilteredProducts((prev) =>
+        [...prev].sort((a, b) => a.price - b.price),
+      );
+    } else {
+      setFilteredProducts((prev) =>
+        [...prev].sort((a, b) => b.price - a.price),
+      );
+    }
+  }, [sort]);
+
+  const renderProducts = category ? filteredProducts : products.slice(0, 8);
+
   return (
     <Container>
-      {popularProducts.map((product) => (
-        <Product product={product} key={product.id} />
+      {renderProducts?.map((product) => (
+        <Product product={product} key={product._id} />
       ))}
     </Container>
   );

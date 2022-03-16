@@ -1,11 +1,15 @@
 import { Add, Remove } from "@mui/icons-material";
-import React from "react";
+import React, { useEffect, useState } from "react";
+import { useParams } from "react-router-dom";
 import styled from "styled-components";
 import Annoucement from "../components/Annoucement";
 import Footer from "../components/Footer";
 import NavBar from "../components/NavBar";
 import Newsletters from "../components/Newsletters";
-import { mobile } from "../responsive";
+import { mobile, tablet } from "../responsive";
+import * as api from "../api";
+import { addProduct } from "../redux/cart";
+import { useDispatch } from "react-redux";
 
 const Container = styled.div``;
 
@@ -21,15 +25,24 @@ const Wrapper = styled.div`
 
 const ImageContainer = styled.div`
   flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 `;
 
 const Image = styled.img`
   width: 100%;
-  height: 90vh;
+  max-width: 30rem;
+  height: 80vh;
   object-fit: cover;
 
   ${mobile({
-    height: "40vh",
+    width: "50vw",
+    height: "30vh",
+  })}
+
+  ${tablet({
+    height: "60vh",
   })}
 `;
 
@@ -41,6 +54,7 @@ const InfoContainer = styled.div`
 `;
 
 const Title = styled.h1`
+  font-size: 2.5rem;
   font-weight: 200;
 `;
 
@@ -50,7 +64,7 @@ const Description = styled.p`
 
 const Price = styled.span`
   font-weight: 100;
-  font-size: 2.5rem;
+  font-size: 1.5rem;
 `;
 
 const FilterContainer = styled.div`
@@ -73,17 +87,19 @@ const Filter = styled.div`
 `;
 
 const FilterTitle = styled.span`
-  font-size: 1.5rem;
+  font-size: 1.2rem;
   font-weight: 200;
   margin-right: 1rem;
   min-width: 4rem;
 `;
 
 const FilterColor = styled.div`
-  width: 1.5rem;
-  height: 1.5rem;
+  width: ${(props) => (props.isSelected ? "2.1rem" : "1.5rem")};
+  height: ${(props) => (props.isSelected ? "2.1rem" : "1.5rem")};
   border-radius: 50%;
   background-color: ${(props) => props.color};
+  box-shadow: 0px 0px 5px 0px
+    rgba(0, 0, 0, ${(props) => (props.isSelected ? "0.5" : "0.2")});
   margin-right: 0.5rem;
   cursor: pointer;
 
@@ -92,10 +108,13 @@ const FilterColor = styled.div`
   &:hover {
     transform: scale(1.2);
   }
+
+  border: ${(props) => (props.isError ? "3px solid red" : "none")};
 `;
 
 const FilterSize = styled.select`
   padding: 0.5rem;
+  border: ${(props) => (props.isError ? "3px solid red" : "")};
 `;
 
 const FilterSizeOption = styled.option``;
@@ -144,49 +163,92 @@ const Button = styled.button`
 `;
 
 const Product = () => {
+  const { id } = useParams();
+  const [product, setProduct] = useState({});
+  const [quantity, setQuantity] = useState(1);
+  const [selectedColor, setColor] = useState("");
+  const [selectedSize, setSize] = useState("");
+  const [submitted, setSubmitted] = useState(false);
+
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    const getProduct = async () => {
+      try {
+        const { data } = await api.getProduct(id);
+        setProduct(data);
+      } catch (error) {}
+    };
+
+    getProduct();
+  }, [id]);
+
+  const handleQuantity = (type) => {
+    if (type === "dec") quantity > 1 && setQuantity((prev) => prev - 1);
+    else {
+      setQuantity((prev) => prev + 1);
+    }
+  };
+
+  const handleAddToCart = () => {
+    setSubmitted(true);
+
+    if (!selectedColor || !selectedSize) return;
+
+    dispatch(
+      addProduct({
+        ...product,
+        color: selectedColor,
+        size: selectedSize,
+        quantity,
+      }),
+    );
+  };
+
   return (
     <Container>
       <Annoucement />
       <NavBar />
       <Wrapper>
         <ImageContainer>
-          <Image src="https://d3o2e4jr3mxnm3.cloudfront.net/Rocket-Vintage-Chill-Cap_66374_1_lg.png" />
+          <Image src={product.img} />
         </ImageContainer>
         <InfoContainer>
-          <Title>AAA</Title>
-          <Description>
-            Lorem ipsum dolor sit amet consectetur adipisicing elit. Veniam
-            voluptate quisquam, similique nesciunt id eveniet eaque, tempore,
-            tempora culpa distinctio ratione inventore consectetur fugit quas ab
-            repellendus omnis suscipit repellat vero nam.
-          </Description>
-          <Price>$ 20</Price>
+          <Title>{product.title}</Title>
+          <Description>{product.desc}</Description>
+          <Price>$ {product.price}</Price>
           <FilterContainer>
             <Filter>
               <FilterTitle>Color</FilterTitle>
-              <FilterColor color="black" />
-              <FilterColor color="blue" />
-              <FilterColor color="darkblue" />
-              <FilterColor color="gray" />
+              {product?.color?.map((c) => (
+                <FilterColor
+                  isError={submitted && !selectedColor}
+                  color={c}
+                  onClick={() => setColor(c)}
+                  isSelected={selectedColor === c}
+                />
+              ))}
             </Filter>
             <Filter>
               <FilterTitle>Size</FilterTitle>
-              <FilterSize>
-                <FilterSizeOption>XS</FilterSizeOption>
-                <FilterSizeOption>S</FilterSizeOption>
-                <FilterSizeOption>M</FilterSizeOption>
-                <FilterSizeOption>L</FilterSizeOption>
-                <FilterSizeOption>XL</FilterSizeOption>
+              <FilterSize
+                onChange={(e) => setSize(e.target.value)}
+                isError={submitted && !selectedSize}
+              >
+                <FilterSizeOption disabled selected value=""></FilterSizeOption>
+                {product?.size?.map((size) => (
+                  <FilterSizeOption key={size}>{size}</FilterSizeOption>
+                ))}
               </FilterSize>
             </Filter>
           </FilterContainer>
           <AddContainer>
             <AmountContainer>
-              <Remove />
-              <Amount>1</Amount>
-              <Add />
+              <Remove onClick={() => handleQuantity("dec")} />
+              <Amount>{quantity}</Amount>
+              <Add onClick={() => handleQuantity("inc")} />
             </AmountContainer>
-            <Button>ADD TO CART</Button>
+            <Button onClick={handleAddToCart}>ADD TO CART</Button>
           </AddContainer>
         </InfoContainer>
       </Wrapper>

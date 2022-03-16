@@ -9,6 +9,7 @@ import { mobile } from "../responsive.js";
 const Container = styled.div`
   width: 100%;
   height: 100vh;
+  min-height: 40rem;
   display: flex;
   position: relative;
   overflow: hidden;
@@ -41,6 +42,7 @@ const Arrow = styled.div`
 const Wrapper = styled.div`
   height: 100%;
   display: flex;
+  align-items: center;
   transition: all 1.5s ease;
   transform: translateX(${(props) => Number(props.slideIndex) * -100}vw);
 `;
