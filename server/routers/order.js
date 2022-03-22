@@ -88,7 +88,7 @@ router.get('/find/:userId', verifyTokenAndAuthorization, async (req, res) => {
 
 // GET ALL
 
-router.get('/', verifyTokenAndAuthorization, async (req, res) => {
+router.get('/', verifyTokenAndAdmin, async (req, res) => {
   try {
     const orders = await Order.find();
     res.status(StatusCodes.OK).json(orders);
@@ -106,6 +106,12 @@ router.get('/income', verifyTokenAndAdmin, async (req, res) => {
   const date = new Date();
   const lastMonth = new Date(date.setMonth(date.getMonth() - 1));
   const fromMonth = new Date(new Date().setMonth(lastMonth.getMonth() - 1));
+  const productId = req.query.pid;
+
+  if (!mongoose.isValidObjectId(productId))
+    return res
+      .status(StatusCodes.BAD_REQUEST)
+      .json({ message: 'Invalid Product Id' });
 
   try {
     const income = await Order.aggregate([
@@ -114,6 +120,13 @@ router.get('/income', verifyTokenAndAdmin, async (req, res) => {
           createdAt: {
             $gte: fromMonth,
           },
+          ...(productId && {
+            products: {
+              $elemMatch: {
+                productId,
+              },
+            },
+          }),
         },
       },
       {

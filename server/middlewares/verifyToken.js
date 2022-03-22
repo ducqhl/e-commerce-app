@@ -7,13 +7,13 @@ export const verifyToken = (req, res, next) => {
 
   if (authHeader) {
     jwt.verify(authHeader, process.env.JWT_SECRECT, (err, user) => {
-      if (err)
-        res
+      if (err) {
+        return res
           .status(StatusCodes.FORBIDDEN)
           .json({ message: 'Token is not valid' });
+      }
 
       req.user = user;
-
       next();
     });
   } else {

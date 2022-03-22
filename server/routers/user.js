@@ -119,6 +119,11 @@ router.get('/stats', verifyTokenAndAdmin, async (req, res) => {
           total: { $sum: 1 },
         },
       },
+      {
+        $sort: {
+          _id: 1,
+        },
+      },
     ]);
 
     res.status(StatusCodes.OK).json(data);
