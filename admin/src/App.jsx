@@ -1,8 +1,13 @@
 import Sidebar from "./components/Sidebar";
 import Topbar from "./components/Topbar";
-import "./style.css";
+import "./App.css";
 import Home from "./pages/Home";
-import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
+import {
+  BrowserRouter as Router,
+  Switch,
+  Route,
+  Redirect,
+} from "react-router-dom";
 import UserList from "./pages/UserList";
 import User from "./pages/User";
 import NewUser from "./pages/NewUser";
@@ -13,13 +18,17 @@ import Login from "./pages/Login";
 import { useSelector } from "react-redux";
 
 function App() {
-  const admin = useSelector((state) => state.user.currentUser.isAdmin);
+  const user = useSelector((state) => state.user);
+
+  const admin = user?.currentUser?.isAdmin;
+
   return (
     <Router>
       <Switch>
         <Route path="/login">
           <Login />
         </Route>
+        {!user?.currentUser && <Redirect to="/login" />}
         {admin && (
           <>
             <Topbar />
