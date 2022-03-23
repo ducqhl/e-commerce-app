@@ -108,11 +108,6 @@ router.get('/income', verifyTokenAndAdmin, async (req, res) => {
   const fromMonth = new Date(new Date().setMonth(lastMonth.getMonth() - 1));
   const productId = req.query.pid;
 
-  if (!mongoose.isValidObjectId(productId))
-    return res
-      .status(StatusCodes.BAD_REQUEST)
-      .json({ message: 'Invalid Product Id' });
-
   try {
     const income = await Order.aggregate([
       {
