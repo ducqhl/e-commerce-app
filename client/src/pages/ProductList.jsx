@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { useLocation, useParams } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import styled from "styled-components";
 import Annoucement from "../components/Annoucement";
 import Footer from "../components/Footer";
@@ -54,7 +54,7 @@ const Option = styled.option``;
 
 const ProductList = () => {
   const { category } = useParams();
-  const search = useQuery().get("search"); 
+  const search = useQuery().get("search");
   const [filters, setFilters] = useState({});
   const [sort, setSort] = useState("newest");
 
