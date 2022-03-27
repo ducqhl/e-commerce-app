@@ -5,6 +5,7 @@ export const sliderItems = [
     description:
       "DON'T COMPROMISE ON STYLE! GET FLAT 30% OFF FOR NEW ARRIVALS.",
     buttonText: "SHOW NOW",
+    category: "summer",
     image: "/static/images/p1.png",
   },
   {
@@ -13,6 +14,7 @@ export const sliderItems = [
     description:
       "DON'T COMPROMISE ON STYLE! GET FLAT 30% OFF FOR NEW ARRIVALS.",
     buttonText: "SHOW NOW",
+    category: "spring",
     image: "/static/images/p4.png",
   },
   {
@@ -21,6 +23,7 @@ export const sliderItems = [
     description:
       "DON'T COMPROMISE ON STYLE! GET FLAT 30% OFF FOR NEW ARRIVALS.",
     buttonText: "SHOW NOW",
+    category: "loungewear",
     image: "/static/images/p3.png",
     bg: "fcf1ed",
   },
@@ -30,6 +33,7 @@ export const sliderItems = [
     description:
       "DON'T COMPROMISE ON STYLE! GET FLAT 30% OFF FOR NEW ARRIVALS.",
     buttonText: "SHOW NOW",
+    category: "autumn",
     image: "/static/images/p2.png",
     bg: "fbf0f4",
   },

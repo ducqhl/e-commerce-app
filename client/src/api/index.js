@@ -5,8 +5,8 @@ const api = axios.create({
   timeout: 1000,
 });
 
-export const getProducts = async (category) => {
-  return api.get(`/product?category=${category ?? ""}`);
+export const getProducts = async (category, search) => {
+  return api.get(`/product?category=${category ?? ""}&search=${search ?? ""}`);
 };
 
 export const getProduct = async (id) => {

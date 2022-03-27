@@ -3,8 +3,9 @@ import { ShoppingBagOutlined } from "@mui/icons-material";
 import Search from "@mui/icons-material/Search";
 import Badge from "@mui/material/Badge";
 import { mobile, tablet } from "../responsive";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
+import { useState } from "react";
 
 const Container = styled.div`
   height: 5rem;
@@ -118,6 +119,12 @@ const MenuItem = styled(Link)`
 
 const NavBar = () => {
   const products = useSelector((state) => state.cart.products);
+  const [search, setSearch] = useState("");
+  const navigate = useNavigate();
+
+  const handleKeyDown = (event) => {
+    if (event.key === "Enter" && search) navigate("/products?search=" + search);
+  };
 
   return (
     <Container>
@@ -125,7 +132,12 @@ const NavBar = () => {
         <Left>
           <Language>EN</Language>
           <SearchContainer>
-            <Input placeholder="Search" />
+            <Input
+              placeholder="Search"
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+              onKeyDown={handleKeyDown}
+            />
             <SearchIcon />
           </SearchContainer>
         </Left>

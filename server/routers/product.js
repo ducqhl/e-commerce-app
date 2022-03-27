@@ -85,18 +85,30 @@ router.get('/find/:id', async (req, res) => {
 router.get('/', async (req, res) => {
   const qNew = req.query.new;
   const qCategory = req.query.category;
+  const qSearch = req.query.search;
 
   try {
     let products;
 
     if (qNew) {
       products = await Product.find().sort({ createdAt: -1 }).limit(1);
-    } else if (qCategory) {
-      products = await Product.find({
-        categories: {
+    } else if (qCategory || qSearch) {
+      let query = {};
+
+      if (qCategory) {
+        query.categories = {
           $in: [qCategory],
-        },
-      });
+        };
+      }
+
+      if (qSearch) {
+        query.title = {
+          $regex: qSearch,
+          $options: 'ig',
+        };
+      }
+
+      products = await Product.find(query);
     } else {
       products = await Product.find();
     }

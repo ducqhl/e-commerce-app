@@ -1,11 +1,12 @@
 import React, { useState } from "react";
-import { useParams } from "react-router-dom";
+import { useLocation, useParams } from "react-router-dom";
 import styled from "styled-components";
 import Annoucement from "../components/Annoucement";
 import Footer from "../components/Footer";
 import NavBar from "../components/NavBar";
 import Newsletters from "../components/Newsletters";
 import Products from "../components/Products";
+import useQuery from "../hooks/useQuery";
 import { mobile } from "../responsive";
 
 const Container = styled.div``;
@@ -53,6 +54,7 @@ const Option = styled.option``;
 
 const ProductList = () => {
   const { category } = useParams();
+  const search = useQuery().get("search"); 
   const [filters, setFilters] = useState({});
   const [sort, setSort] = useState("newest");
 
@@ -105,7 +107,12 @@ const ProductList = () => {
           </Select>
         </Filter>
       </FilterContainer>
-      <Products category={category} filters={filters} sort={sort} />
+      <Products
+        category={category}
+        filters={filters}
+        sort={sort}
+        search={search}
+      />
       <Newsletters />
       <Footer />
     </Container>

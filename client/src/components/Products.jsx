@@ -15,14 +15,14 @@ const Container = styled.div`
   })}
 `;
 
-const Products = ({ category, filters, sort }) => {
+const Products = ({ category, filters, sort, search }) => {
   const [products, setProducts] = useState([]);
   const [filteredProducts, setFilteredProducts] = useState([]);
 
   useEffect(() => {
     const getProducts = async () => {
       try {
-        const { data } = await api.getProducts(category);
+        const { data } = await api.getProducts(category, search);
         setProducts(data);
       } catch (error) {
         console.log(error);
@@ -30,7 +30,7 @@ const Products = ({ category, filters, sort }) => {
     };
 
     getProducts();
-  }, [category]);
+  }, [category, search]);
 
   useEffect(() => {
     category &&

@@ -5,6 +5,7 @@ import { useState } from "react";
 
 import { sliderItems } from "../data.js";
 import { mobile } from "../responsive.js";
+import { Link } from "react-router-dom";
 
 const Container = styled.div`
   width: 100%;
@@ -85,11 +86,14 @@ const Description = styled.p`
   letter-spacing: 0.2rem;
 `;
 
-const Button = styled.button`
+const Button = styled(Link)`
   padding: 0.8rem;
   font-size: 1.2rem;
   background-color: transparent;
   cursor: pointer;
+  color: black;
+  text-decoration: none;
+  border: 2px solid black;
 `;
 
 const Slider = () => {
@@ -126,7 +130,9 @@ const Slider = () => {
             <InfoContainer>
               <Title>{slide.title}</Title>
               <Description>{slide.description}</Description>
-              <Button>{slide.buttonText || "SHOW NOW"}</Button>
+              <Button to={`/products/${slide.category}`}>
+                {slide.buttonText || "SHOW NOW"}
+              </Button>
             </InfoContainer>
           </Slide>
         ))}
