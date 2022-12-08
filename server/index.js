@@ -14,7 +14,7 @@ import userRoute from './routers/user.js';
 mongoose
   .connect(process.env.MONGODB_CONNECTION_URI)
   .then(() => console.log('DB connect successfully'))
-  .catch((error) => console.log(error));
+  .catch((error) => console.log(error));;
 
 const app = express();
 
