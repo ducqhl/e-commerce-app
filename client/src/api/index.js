@@ -1,7 +1,7 @@
 import axios from "axios";
 
 const api = axios.create({
-  baseURL: "https://ecommerce-appi.herokuapp.com/api",
+  baseURL: "https://e-commerce-app-tyuh.onrender.com/api",
   timeout: 1000,
 });
 
