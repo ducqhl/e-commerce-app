@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const BASE_URL = "https://ecommerce-appi.herokuapp.com/api";
+const BASE_URL = "https://e-commerce-app-tyuh.onrender.com/api";
 
 const publicRequest = axios.create({
   baseURL: BASE_URL,
